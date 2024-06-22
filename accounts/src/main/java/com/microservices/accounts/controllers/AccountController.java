@@ -3,6 +3,7 @@ package com.microservices.accounts.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,47 +17,54 @@ import com.microservices.accounts.dto.CustomerDto;
 import com.microservices.accounts.dto.ResponseDto;
 import com.microservices.accounts.service.IAccountService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping(path = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
 @AllArgsConstructor
+@Validated
 public class AccountController {
 
     private IAccountService iAccountService;
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseDto> createAccount(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<ResponseDto> createAccount(@Valid @RequestBody CustomerDto customerDto) {
         iAccountService.createAccount(customerDto);
-        return ResponseEntity.
-        status(HttpStatus.CREATED).body(new ResponseDto(AccountsConstants.STATUS_200,
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(AccountsConstants.STATUS_200,
                 AccountsConstants.Message_200));
     }
 
     @GetMapping("/fetch")
-    public ResponseEntity<CustomerDto> fetchAccountDetails(@RequestParam String mobileNumber){
+    public ResponseEntity<CustomerDto> fetchAccountDetails(
+            @RequestParam @Pattern(regexp = "($|[0-9]{10})", message = "Mobile number must be 10 digits") String mobileNumber) {
         CustomerDto customerDto = iAccountService.fetchAccount(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(customerDto);
     }
-    
+
     @PutMapping("/update")
-    public ResponseEntity<ResponseDto> updateAccountDetails(@RequestBody CustomerDto customerDto){
+    public ResponseEntity<ResponseDto> updateAccountDetails(@Valid @RequestBody CustomerDto customerDto) {
         boolean isUpdated = iAccountService.updateAccount(customerDto);
-        if(isUpdated){
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(AccountsConstants.STATUS_200, AccountsConstants.Message_200));
+        if (isUpdated) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseDto(AccountsConstants.STATUS_200, AccountsConstants.Message_200));
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(AccountsConstants.STATUS_500, AccountsConstants.Message_500));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseDto(AccountsConstants.STATUS_500, AccountsConstants.Message_500));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<ResponseDto> deleteAccountDetails(@RequestParam String mobileNumber){
+    public ResponseEntity<ResponseDto> deleteAccountDetails(
+            @RequestParam @Pattern(regexp = "($|[0-9]{10})", message = "Account number must be 10 digits") String mobileNumber) {
         boolean deleted = iAccountService.deleteAccount(mobileNumber);
-        System.out.println(deleted + "The value of deleted is");
-        if(deleted == true){
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(AccountsConstants.STATUS_200, AccountsConstants.Message_200));
+        if (deleted == true) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseDto(AccountsConstants.STATUS_200, AccountsConstants.Message_200));
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(AccountsConstants.STATUS_500, AccountsConstants.Message_500));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseDto(AccountsConstants.STATUS_500, AccountsConstants.Message_500));
     }
 
 }
