@@ -18,11 +18,11 @@ public class LoansDto {
     private String loanType;
     
     @Positive(message = "Total loan amount should be greater than zero")
-    private String totalLoan;
+    private int  totalLoan;
 
     @PositiveOrZero(message = "Total loan amount paid should be equal or greater than zero")
-    private String amountPaid;
+    private int  amountPaid;
    
     @PositiveOrZero(message = "Total outstanding amount should be equal or greater than zero")
-    private String outStandingAmount;
+    private int  outStandingAmount;
 }

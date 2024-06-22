@@ -5,12 +5,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.loan.loan.constants.LoansConstants;
 import com.example.loan.loan.dto.LoansDto;
 import com.example.loan.loan.dto.ResponseDto;
+import com.example.loan.loan.service.iLoanService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,26 +25,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping(path = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class LoanController {
 
+    private iLoanService iLoanService;
+
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> createLoan(
             @RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be 10 digits") String mobileNumber) {
-        return null;
+                iLoanService.createLoan(mobileNumber);
+                return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(LoansConstants.STATUS_200,LoansConstants.MESSAGE_200));
     }
 
-    @GetMapping("path")
+    @GetMapping("/fetch")
     public ResponseEntity<LoansDto> getMethodName(
-            @RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be 10 digits") String param) {
-        return null;
+            @RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be 10 digits") String mobileNumber) {
+        LoansDto dto = iLoanService.fetchLoan(mobileNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
-    @PutMapping("path/{id}")
+    @PutMapping("/update")
     public ResponseEntity<ResponseDto> putMethodName(@Valid @RequestBody LoansDto loansDto) {
-        return null;
+        boolean isUpdated = iLoanService.updateLoan(loansDto);
+        if(isUpdated){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseDto(LoansConstants.STATUS_200, LoansConstants.MESSAGE_200)
+            );
+        }else{
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
+                new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_UPDATE)
+            );
+        }
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseDto> deleteLoanDetails(@RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber) {
-        return null;
+        boolean isDeleted = iLoanService.deleteLoan(mobileNumber);
+        if(isDeleted){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseDto(LoansConstants.STATUS_200, LoansConstants.MESSAGE_200)
+            );
+        }else{
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
+                new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_DELETE)
+            );
+        }
     }
 
 }
