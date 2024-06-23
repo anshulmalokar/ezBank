@@ -1,0 +1,38 @@
+services:
+  accounts:
+    image: "anshulmalokar/accounts:v1"
+    container_name: accounts-ms
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+         cpus: 700m
+    networks:
+      - ezbank
+  loans:
+    image: "anshulmalokar/loans:v1"
+    container_name: loans-ms
+    ports:
+      - "9500:9500"
+    deploy:
+      resources:
+        limits:
+          cpus: 700m
+    networks:
+      - ezbank
+  cards:
+    image: "anshulmalokar/cards:v1"
+    container_name: cards-ms
+    ports:
+      - "9100:9100"
+    deploy:
+      resources:
+        limits:
+          cpus: 700m
+    networks:
+      - ezbank
+networks:
+  ezbank:
+    driver: bridge
+  
