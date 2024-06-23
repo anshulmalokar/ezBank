@@ -12,10 +12,12 @@ import com.example.loan.loan.service.iLoanService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(path = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
+@AllArgsConstructor
+@Validated
 public class LoanController {
 
     private iLoanService iLoanService;
@@ -35,14 +39,14 @@ public class LoanController {
     }
 
     @GetMapping("/fetch")
-    public ResponseEntity<LoansDto> getMethodName(
+    public ResponseEntity<LoansDto> fetchLoanDetails(
             @RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be 10 digits") String mobileNumber) {
         LoansDto dto = iLoanService.fetchLoan(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseDto> putMethodName(@Valid @RequestBody LoansDto loansDto) {
+    public ResponseEntity<ResponseDto> updateLoanDetails(@Valid @RequestBody LoansDto loansDto) {
         boolean isUpdated = iLoanService.updateLoan(loansDto);
         if(isUpdated){
             return ResponseEntity.status(HttpStatus.OK).body(

@@ -1,45 +1,38 @@
 package com.example.cards.entity;
 
-import org.springframework.data.annotation.Id;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import jakarta.persistence.Id;
 
 @Entity
-@Table(name = "cards")
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cards extends BaseEntity {
 
-    @Id
-    @Column(name = "card_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cardId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long cardId;
 
-    @Column(name = "mobile_number")
-    private String mobileNumber;
+	private String mobileNumber;
 
-    @Column(name = "card_number")
-    private String cardNumber;
+	private String cardNumber;
 
-    @Column(name = "card_type")
-    private String cardType;
+	private String cardType;
 
-    @Column(name = "total_limit")
-    private int totalLimit;
+	private int totalLimit;
 
-    @Column(name = "amount_used")
-    private int amountUsed;
+	private int amountUsed;
 
-    @Column(name = "available_amount")
-    private int availableAmount;
+	private int availableAmount;
+	
 }

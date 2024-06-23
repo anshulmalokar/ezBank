@@ -1,5 +1,5 @@
 server:
-  port: 8900
+  port: 9500
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
