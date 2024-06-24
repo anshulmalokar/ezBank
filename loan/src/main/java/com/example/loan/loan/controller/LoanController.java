@@ -7,13 +7,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.loan.loan.constants.LoansConstants;
 import com.example.loan.loan.dto.LoansDto;
+import com.example.loan.loan.dto.LoansDtoInfo;
 import com.example.loan.loan.dto.ResponseDto;
 import com.example.loan.loan.service.iLoanService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +27,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(path = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
-@AllArgsConstructor
 @Validated
 public class LoanController {
 
-    private iLoanService iLoanService;
+    private final iLoanService iLoanService;
+
+    public LoanController(iLoanService iLoanService){
+        this.iLoanService = iLoanService;
+    }
+
+    @Value("${build.version}")
+    private String build_version;
+
+    @Autowired
+    private LoansDtoInfo dtoInfo;
 
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> createLoan(
@@ -71,6 +82,16 @@ public class LoanController {
                 new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_DELETE)
             );
         }
+    }
+
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo(){
+        return ResponseEntity.status(HttpStatus.OK).body(build_version);
+    }
+
+    @GetMapping("/contact-info")
+    public ResponseEntity<LoansDtoInfo> getAccountsInformation(){
+        return ResponseEntity.status(HttpStatus.OK).body(dtoInfo);   
     }
 
 }

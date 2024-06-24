@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cards.constants.CardsConstants;
 import com.example.cards.dto.CardsDto;
+import com.example.cards.dto.CardsDtoInfo;
 import com.example.cards.dto.ResponseDto;
 import com.example.cards.services.iCardService;
 
@@ -18,6 +19,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +28,20 @@ import org.springframework.validation.annotation.Validated;
 
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
 @Validated
 public class CardsController {
     
-    private iCardService cardService;
+    private final iCardService cardService;
+
+    public CardsController(iCardService cardService){
+        this.cardService = cardService;
+    }
+
+    @Value("${build.version}")
+    private String buildVersion;
+
+    @Autowired
+    private CardsDtoInfo cardsDtoInfo;
 
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> createCard(@Valid @RequestParam @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
@@ -69,4 +81,13 @@ public class CardsController {
         }
     }
 
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo(){
+        return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+    }
+
+    @GetMapping("/contact-info")
+    public ResponseEntity<CardsDtoInfo> getAccountsInformation(){
+        return ResponseEntity.status(HttpStatus.OK).body(cardsDtoInfo);   
+    }
 }
