@@ -3,11 +3,14 @@ import java.util.*;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @ConfigurationProperties(prefix = "cards")
-public record CardsDtoInfo(
-    String message,
-    Map<String,String> contactDetails,
-    List<String> onCallSupport
-){
-    
+@Getter
+@Setter
+public class CardsDtoInfo{
+    private String message;
+    private Map<String,String> contactDetails;
+    private List<String> onCallSupport;
 }
