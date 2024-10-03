@@ -19,22 +19,24 @@ public class GatewayserverApplication {
 	public RouteLocator eazyBankRouteConfig(RouteLocatorBuilder routeLocatorBuilder) {
 		return routeLocatorBuilder.routes()
 				.route(p -> p
-						.path("/eazybank/accounts/**")
-						.filters(f -> f.rewritePath("/eazybank/accounts/(?<segment>.*)", "/${segment}")
+						.path("/bank/accounts/**")
+						.filters( f -> f.rewritePath("/bank/accounts/(?<segment>.*)","/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
 						.uri("lb://ACCOUNTS"))
 				.route(p -> p
-						.path("/eazybank/loans/**")
-						.filters(f -> f.rewritePath("/eazybank/loans/(?<segment>.*)", "/${segment}")
+						.path("/bank/loans/**")
+						.filters( f -> f.rewritePath("/bank/loans/(?<segment>.*)","/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
 						.uri("lb://LOANS"))
 				.route(p -> p
-						.path("/eazybank/cards/**")
-						.filters(f -> f.rewritePath("/eazybank/cards/(?<segment>.*)", "/${segment}")
+						.path("/bank/cards/**")
+						.filters( f -> f.rewritePath("/bank/cards/(?<segment>.*)","/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
 						.uri("lb://CARDS"))
 				.build();
-
 	}
 
 }
+
+// For the routhing requests check http://localhost:8072/actuator/gateway/routes
+// These will be registered in the acuator

@@ -41,6 +41,12 @@ management:
     env:
       enabled: true
 
+logging:
+  level:
+    com:
+      example:
+        loan: DEBUG
+
 endpoints:
   shutdown:
     enabled: true

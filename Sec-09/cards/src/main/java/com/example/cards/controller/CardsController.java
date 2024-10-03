@@ -1,13 +1,8 @@
 package com.example.cards.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.cards.constants.CardsConstants;
 import com.example.cards.dto.CardsDto;
@@ -33,6 +28,8 @@ public class CardsController {
     
     private final iCardService cardService;
 
+    private static final Logger logger = LoggerFactory.getLogger(CardsController.class);
+
     public CardsController(iCardService cardService){
         this.cardService = cardService;
     }
@@ -52,7 +49,10 @@ public class CardsController {
     }
 
     @GetMapping("/fetch")
-    public ResponseEntity<CardsDto> fetchCardDetails(@RequestParam  @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
+    public ResponseEntity<CardsDto> fetchCardDetails(
+            @RequestHeader("eazybank-correlation-id")
+            String correlationId,,@RequestParam  @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits") String mobileNumber){
+        logger.debug("eazyBank-correlation-id found: {} ", correlationId);
         CardsDto cardsDto = cardService.fetchCard(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(cardsDto);
     }

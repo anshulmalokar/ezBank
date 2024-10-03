@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping(path = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
 @Validated
-public class AccountController {
+public class  AccountController {
 
     private IAccountService iAccountService;
 

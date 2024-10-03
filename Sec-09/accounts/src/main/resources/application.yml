@@ -45,6 +45,12 @@ endpoints:
   shutdown:
     enabled: true
 
+logging:
+  level:
+    com:
+      microservices:
+        accounts: DEBUG
+
 eureka:
   instance:
     preferIpAddress: true

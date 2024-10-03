@@ -41,6 +41,12 @@ management:
     env:
       enabled: true
 
+logging:
+  level:
+    com:
+      example:
+        cards: DEBUG
+
 endpoints:
   shutdown:
     enabled: true
