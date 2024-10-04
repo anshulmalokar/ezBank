@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.microservices.accounts.dto.CardsDto;
 
-@FeignClient("cards")
+
+@FeignClient(name = "cards",fallback = CardsFallBack.class)
 public interface CardsFeignClient {
     @GetMapping(value = "/api/fetch",consumes = "application/json") 
      public ResponseEntity<CardsDto> fetchCardDetails(@RequestHeader("eazybank-correlation-id") String id, @RequestParam String mobileNumber);

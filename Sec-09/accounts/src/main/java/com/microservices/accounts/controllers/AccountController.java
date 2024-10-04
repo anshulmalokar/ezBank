@@ -1,5 +1,6 @@
 package com.microservices.accounts.controllers;
 
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -82,11 +83,19 @@ public class  AccountController {
                 .body(new ResponseDto(AccountsConstants.STATUS_500, AccountsConstants.Message_500));
     }
 
+    @Retry(name = "getBuildInfo",fallbackMethod = "getBuildInfoFallback")
     @GetMapping("/build-info")
-    public ResponseEntity<String> getBuildInfo(){
-        return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
     }
 
+    public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("0.9");
+    }
     @GetMapping("/java-version")
     public ResponseEntity<String> getJavaVersion(){
         return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("JAVA_HOME"));
